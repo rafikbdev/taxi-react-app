@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
-from trips.serializers import TripSerializer, UserSerialer
+from trips.serializers import TripSerializer, UserSerializer
 from trips.models import Trip
 
 PASSWORD = 'pAssw0rd!'
@@ -72,11 +72,11 @@ class HttpTripTest(APITestCase):
 
     def test_user_can_list_trips(self):
         trips = [
-            Trips.objects.create(pick_up_address='A', drop_off_address='B'),
-            Trips.objects.create(pick_up_address='B', drop_off_address='C')
+            Trip.objects.create(pick_up_address='A', drop_off_address='B'),
+            Trip.objects.create(pick_up_address='B', drop_off_address='C')
         ]
         response = self.client.get(reverse('trip:trip_list'),
-            HTTP_AUTHORIZATION=f'BEARER {self.access}'
+            HTTP_AUTHORIZATION=f'Bearer {self.access}'
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
