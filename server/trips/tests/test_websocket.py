@@ -1,4 +1,5 @@
 import pytest
+from channels.layers import get_channel_layer
 from channels.testing import WebsocketCommunicator
 
 from taxi.routing import application
@@ -23,6 +24,7 @@ class TestWebSocket:
         await communicator.disconnect()
 
     async def test_can_send_and_receive_messages(self, settings):
+        """Test if user can send message in empty room"""
         settings.CHANNEL_LAYERS = TEST_CHANNEL_LAYERS
         communicator = WebsocketCommunicator(
             application=application,
@@ -34,6 +36,25 @@ class TestWebSocket:
             'data': 'This is a test message'
         }
         await communicator.send_json_to(message)
+
+        response = await communicator.receive_json_from()
+        assert response == message
+        await communicator.disconnect()
+
+    async def test_can_send_and_receive_broadcast_message(self, settings):
+        """Test if user can send message in room with other people"""
+        settings.CHANNEL_LAYERS = TEST_CHANNEL_LAYERS
+        communicator = WebsocketCommunicator(
+            application=application,
+            path='/taxi/'
+        )
+        await communicator.connect()
+        message = {
+            'type': 'echo.message',
+            'data': 'This is a test message'
+        }
+        channel_layer = get_channel_layer()
+        await channel_layer.group_send('test', message=message)
 
         response = await communicator.receive_json_from()
         assert response == message
