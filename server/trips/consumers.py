@@ -106,10 +106,9 @@ class TaxiConsumer(AsyncJsonWebsocketConsumer):
             await self.create_trip(content)
         elif message_type == 'echo.message':
             await self.echo_message(content)
-        elif message_type == 'update.trip': # new
+        elif message_type == 'update.trip':
             await self.update_trip(content)
 
-    # new
     async def update_trip(self, message):
         data = message.get('data')
         trip = await self._update_trip(data)
