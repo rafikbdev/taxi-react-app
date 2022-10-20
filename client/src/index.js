@@ -1,5 +1,4 @@
 import 'bootswatch/dist/lumen/bootstrap.css';
-import 'cypress-file-upload';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
