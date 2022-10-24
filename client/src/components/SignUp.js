@@ -9,7 +9,7 @@ import axios from 'axios';
 function SignUp (props) {
     const [isSubmitted, setSubmitted] = useState(false);
     const onSubmit = async (values, actions) => {
-        const url = '/api/sign_up/';
+        const url = `${process.env.REACT_APP_BASE_URL}/api/sign_up/`;
         const formData = new FormData();
 
         formData.append('username', values.username);
@@ -18,7 +18,7 @@ function SignUp (props) {
         formData.append('password1', values.password);
         formData.append('password2', values.password);
         formData.append('group', values.group);
-        formData.append('photo', values.photo)
+        formData.append('photo', values.photo);
 
         try {
             await axios.post(url, formData);
@@ -152,10 +152,11 @@ function SignUp (props) {
                                     <Form.Control
                                         className={ 'photo' in errors ? 'is-invalid' : '' }
                                         name='photo'
-                                        onChange={handleChange}
-                                        type='file'
+                                        onChange={ event => {
+                                            setFieldValue('photo', event.currentTarget.files[0]);
+                                        }}
                                         required
-                                        values={values.photo}
+                                        type='file'
                                     />
                                     {
                                         'photo' in errors && (

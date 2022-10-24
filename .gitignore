@@ -2,6 +2,7 @@ __pycache__
 env
 *.sqlite3
 .pytest_cache
+photo_*
 
 ############## client ##############
 
