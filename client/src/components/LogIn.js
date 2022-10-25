@@ -57,8 +57,8 @@ function LogIn ({ isLoggedIn, logIn }) {
                         }) => (
                             <>
                                 {
-                                    '__all__' in errors && (
-                                        <Alert variant='dagger'>
+                                     '__all__' in errors && (
+                                        <Alert variant='danger'>
                                             {errors.__all__}
                                         </Alert>
                                     )
