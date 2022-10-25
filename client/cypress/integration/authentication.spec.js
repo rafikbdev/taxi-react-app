@@ -4,31 +4,19 @@ const email = faker.internet.email();
 const firstName = faker.name.firstName();
 const lastName = faker.name.lastName();
 
-const logIn = () => {
-    // Capture HTTP requests.
-    cy.intercept('POST', 'log_in').as('logIn');
-
-    // Log into the app.
-    cy.visit('/#/log-in');
-    cy.get('input#username').type(email);
-    cy.get('input#password').type('pAssw0rd', { log: false });
-    cy.get('button').contains('Log in').click();
-    cy.wait('@logIn');
-};
-
 describe('Authentication', function () {
     it('Can sign up.', function () {
         cy.addUser(email, firstName, lastName, 'rider');
     });
 
     it('Cannot visit the sign up page when logged in.', function () {
-        logIn();
+        cy.logIn(email);
         cy.visit('/#/sign-up');
         cy.hash().should('eq', '#/');
     });
 
     it('Can log out.', function () {
-        logIn();
+        cy.logIn(email);
         cy.get('button').contains('Log out').click().should(() => {
             expect(window.localStorage.getItem('taxi.auth')).to.be.null;
         });
@@ -62,19 +50,19 @@ describe('Authentication', function () {
     });
 
     it('Can log in.', function () {
-        logIn();
+        cy.logIn(email);
         cy.hash().should('eq', '#/');
         cy.get('button').contains('Log out');
     });
 
     it('Cannot visit the login page when logged in.', function () {
-        logIn();
+        cy.logIn(email);
         cy.visit('/#/log-in');
         cy.hash().should('eq', '#/');
     });
 
     it('Cannot see links when logged in.', function () {
-        logIn();
+        cy.logIn(email);
         cy.get('button#signUp').should('not.exist');
         cy.get('button#logIn').should('not.exist');
     });
@@ -84,8 +72,8 @@ describe('Authentication', function () {
         statusCode: 400,
         body: {
             __all__: [
-            'Please enter a correct username and password. ' +
-            'Note that both fields may be case-sensitive.'
+                'Please enter a correct username and password. ' +
+                'Note that both fields may be case-sensitive.'
             ]
         }
         }).as('logIn');
@@ -95,8 +83,8 @@ describe('Authentication', function () {
         cy.get('button').contains('Log in').click();
         cy.wait('@logIn');
         cy.get('div.alert').contains(
-        'Please enter a correct username and password. ' +
-        'Note that both fields may be case-sensitive.'
+            'Please enter a correct username and password. ' +
+            'Note that both fields may be case-sensitive.'
         );
         cy.hash().should('eq', '#/log-in');
     });
