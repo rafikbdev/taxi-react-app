@@ -19,6 +19,7 @@ function Driver (props) {
                 setTrips(response.data);
             }
         };
+        loadTrips()
     }, []);
 
     if(!isDriver()){

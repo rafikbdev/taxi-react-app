@@ -7,6 +7,69 @@ const riderEmail = faker.internet.email();
 const riderFirstName = faker.name.firstName();
 const riderLastName = faker.name.lastName();
 
+const tripResponse = [
+    {
+        id: '94fc5eba-de7a-44b2-8000-856ec824609d',
+        created: '2020-08-18T21:41:08.112946Z',
+        updated: '2020-08-18T21:41:08.112986Z',
+        pick_up_address: 'A',
+        drop_off_address: 'B',
+        status: 'STARTED',
+        driver: {
+            id: 113,
+            first_name: driverFirstName,
+            last_name: driverLastName,
+            photo: 'http://localhost:8003/media/photos/photo_8l6jBO4.jpg',
+        },
+        rider: {
+            id: 112,
+            first_name: riderFirstName,
+            last_name: riderLastName,
+            photo: 'http://localhost:8003/media/photos/photo_7OTK3Gg.jpg',
+        }
+    },
+    {
+        id: 'bb3042cd-88dd-472c-890f-c5f59481de01',
+        created: '2020-08-18T21:41:08.112946Z',
+        updated: '2020-08-18T21:41:08.112986Z',
+        pick_up_address: 'A',
+        drop_off_address: 'B',
+        status: 'REQUESTED',
+        driver: {
+            id: 113,
+            first_name: driverFirstName,
+            last_name: driverLastName,
+            photo: 'http://localhost:8003/media/photos/photo_8l6jBO4.jpg',
+        },
+        rider: {
+            id: 112,
+            first_name: riderFirstName,
+            last_name: riderLastName,
+            photo: 'http://localhost:8003/media/photos/photo_7OTK3Gg.jpg',
+        }
+    },
+    {
+        id: '50e0034f-0696-4b26-9068-8a7d064db922',
+        created: '2020-08-18T21:41:08.112946Z',
+        updated: '2020-08-18T21:41:08.112986Z',
+        pick_up_address: 'A',
+        drop_off_address: 'B',
+        status: 'COMPLETED',
+        driver: {
+            id: 113,
+            first_name: driverFirstName,
+            last_name: driverLastName,
+            photo: 'http://localhost:8003/media/photos/photo_8l6jBO4.jpg',
+        },
+        rider: {
+            id: 112,
+            first_name: riderFirstName,
+            last_name: riderLastName,
+            photo: 'http://localhost:8003/media/photos/photo_7OTK3Gg.jpg',
+        }
+    }
+];
+
 
 describe('The rider dashboard', function () {
     before(function (){
@@ -30,5 +93,47 @@ describe('The rider dashboard', function () {
 
         cy.visit('/#/rider');
         cy.hash().should('eq', '#/rider');
+    });
+
+    it('Display messages for no trips', function () {
+        cy.intercept('trip', {
+            statusCode: 200,
+            body: []
+        }).as('getTrips');
+
+        cy.logIn(riderEmail);
+
+        cy.visit('/#/rider');
+        cy.wait('@getTrips');
+
+        cy.get('[data-cy=trip-card]')
+            .eq(0)
+            .contains('No trips.');
+
+        cy.get('[data-cy=trip-card]')
+        .eq(1)
+        .contains('No trips.')
+    });
+
+    it('Displays current and completed trips', function () {
+        cy.intercept('trip', {
+          statusCode: 200,
+          body: tripResponse
+        }).as('getTrips');
+
+        cy.logIn(riderEmail);
+
+        cy.visit('/#/rider');
+        cy.wait('@getTrips');
+
+        // Current trips.
+        cy.get('[data-cy=trip-card]')
+          .eq(0)
+          .contains('STARTED');
+
+        // Completed trips.
+        cy.get('[data-cy=trip-card]')
+          .eq(1)
+          .contains('COMPLETED');
     });
 });
