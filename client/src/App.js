@@ -1,9 +1,11 @@
 import axios from 'axios';
 
 import React, { useState } from 'react';
-import {  Button, Container, Form, Navbar } from 'react-bootstrap';
+import {  Button, Container, Form, Nav, Navbar } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Outlet, Route, Routes } from 'react-router-dom';
+
+import { isRider } from './/services/AuthService';
 
 import Landing from './components/Landing';
 import LogIn from './components/LogIn';
@@ -16,6 +18,7 @@ import DriverDetail from './components/DriverDetail';
 import Rider from './components/Rider';
 import RiderDashboard from './components/RiderDashboard';
 import RiderDetail from './components/RiderDetail';
+import RiderRequest from './components/RiderRequest';
 
 
 import './App.css';
@@ -51,8 +54,9 @@ function App () {
 				<Route index element={<Landing isLoggedIn={isLoggedIn}/>} />
 				<Route path="/sign-up" element={<SignUp isLoggedIn={isLoggedIn} />} />
 				<Route path="/log-in" element={<LogIn isLoggedIn={isLoggedIn} logIn={logIn} />} />
-				<Route path='rider' element={<Rider />} >
+				<Route path='rider' element={<Rider />}>
 					<Route index element={<RiderDashboard />} />
+					<Route path='request' element={<RiderRequest />} />
 					<Route path=':id' element={<RiderDetail />} />
 				</Route>
 				<Route path='driver' element={<Driver />} >
@@ -76,8 +80,17 @@ function Layout ({ isLoggedIn, logOut }) {
 					<Navbar.Toggle />
 					<Navbar.Collapse className='justify-content-end'>
 						{
+							isRider() && (
+								<Nav className='me-auto'>
+									<LinkContainer to='/rider/request'>
+										<Nav.Link data-cy='request-trip'>Request a trip</Nav.Link>
+									</LinkContainer>
+								</Nav>
+							)
+						}
+						{
 							isLoggedIn && (
-								<Form>
+								<Form className='ms-auto'>
 									<Button type='button' onClick={() => logOut()}>Log out</Button>
 								</Form>
 							)
