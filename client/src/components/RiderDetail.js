@@ -29,8 +29,8 @@ function RiderDetail ({ match }) {
     } else {
         tripMedia = (
             <TripMedia
-            trip={trip}
-            otherGroup='driver'
+                trip={trip}
+                otherGroup='driver'
             />
         );
     }

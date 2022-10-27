@@ -56,3 +56,12 @@ export const getTrips = async () => {
 }
 
 
+export const updateTrip = (trip) => {
+    connect();
+    console.log(trip)
+    const message = {
+        type: 'update.trip',
+        data: trip
+    }
+    _socket.next(message);
+}

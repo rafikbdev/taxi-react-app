@@ -3,7 +3,7 @@ import { Card } from 'react-bootstrap';
 
 import TripMedia from './TripMedia';
 
-function TripCard({ title, trips, group, otherGroup }){
+function TripCard ({ title, trips, group, otherGroup }) {
     let cardBody;
     let mediaList;
 
@@ -28,4 +28,4 @@ function TripCard({ title, trips, group, otherGroup }){
     );
 }
 
-export default TripCard
+export default TripCard;
